@@ -16,6 +16,7 @@
 #include <QGraphicsView>
 #include <QPainter>
 #include <QRandomGenerator>
+#include <algorithm>
 
 #include "player.h"
 
@@ -29,11 +30,15 @@ public slots:
     void setNumberOfPlayers(int players);
     void startGame();
     void firstDrawCoords();
+    void drawCoords1();
+    void drawCoords2();
 
 signals:
     void gameStarted();
     void indices1ARE(int a, int b);
     void indices2ARE(int c, int d);
+    void indexS1(int x);
+    void indexS2(int x);
 
 private:
     int num_of_players;
@@ -53,6 +58,7 @@ private:
     Player* player1;
     Player* ai;
 
+    std::vector<int> indices;
     std::vector<QPixmap> card_images;
     std::vector<int> card_values;
 

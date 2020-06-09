@@ -19,26 +19,30 @@ public:
 
 public slots:
     void on();
-    void drawF();
+    void drawF(int x);
     void standF();
     void doFirstDraw(int x, int y);
+    void emitDRAW();
 //simple AI slot
     void play();
 
 signals:
     void enable(bool b);
     void disable(bool b);
+    void drawPLZ();
 //simple AI signals
 
 private:
     int w;
     int h;
+    int round;
     std::string name;
     bool specialRoundBoolean;
 
     std::vector<int> indices;
     std::vector<int> card_values;
 
+    QPixmap* full_image;
     QLabel* playerLabel;
     QPushButton* rdraw;
     QPushButton* stand;

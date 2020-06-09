@@ -6,6 +6,8 @@ Player::Player(std::string pname) : name(pname)
     h = 100;
     specialRoundBoolean = false;
 
+    full_image = new QPixmap(":/cards.jpg");
+
     //Create the values for each card (same index)
 
     for(int i = 0; i < 10; i ++)
@@ -76,7 +78,7 @@ rdraw->setVisible(false);
 //Create connections
      QObject::connect(this, &Player::enable,rdraw,&QPushButton::setVisible);
      QObject::connect(this, &Player::enable,stand,&QPushButton::setVisible);
-     QObject::connect(rdraw, &QPushButton::clicked,this,&Player::drawF);
+     QObject::connect(rdraw, &QPushButton::clicked,this,&Player::emitDRAW);
      QObject::connect(stand, &QPushButton::clicked,this,&Player::standF);
 
 
@@ -120,59 +122,20 @@ void Player::givePixmap(QPixmap& pimage, int round)
 
 void Player::giveIndex(int pindex)
 {
-    if(indices.size() == 0)
-    {
-        indices.push_back(pindex);
-    }
-
-    if(indices.size() == 1 && indices.at(0) <= pindex)
-    {
-        indices.push_back(pindex+1);
-    }
-    else
-    {
-        indices.push_back(pindex);
-    }
-
-    if(indices.size() == 2 && indices.at(0) <= pindex && indices.at(1) <= pindex)
-    {
-        indices.push_back(pindex+2);
-    }
-    else if(indices.size() == 2 && indices.at(0) > pindex && indices.at(1) > pindex)
-    {
-        indices.push_back(pindex);
-    }
-    else
-    {
-        indices.push_back(pindex+1);
-    }
-
-    if(indices.size() > 2)
-    {
-        int numsBigger = 0;
-        for(auto x : indices)
-        {
-            if(pindex > x)
-            {
-                numsBigger++;
-            }
-        }
-        indices.push_back(pindex+numsBigger);
-    }
+    indices.push_back(pindex);
 }
 
 void Player::doFirstDraw(int x, int y)
 {
-    int round = 1;
-    QPixmap* full_image = new QPixmap(":/cards.jpg");
+    round = 1;
+
+    this->giveIndex(x);
+    this->giveIndex(y);
 
     int mapx_to_y = x % 4;
     int mapx_to_x = x % 13;
 
     QPixmap card_image = full_image->copy(mapx_to_x*73,mapx_to_y*97,73,97);
-
-    this->giveIndex(x);
-    this->giveIndex(y);
 
     this->givePixmap(card_image,round);
 
@@ -185,13 +148,15 @@ void Player::doFirstDraw(int x, int y)
 
 }
 
-void Player::drawF()
+void Player::drawF(int x)
 {
-    int round = indices.size();
-    if(indices.size() == 2)
-    {
+    round++;
+    this->giveIndex(x);
+    int mapx_to_y = x % 4;
+    int mapx_to_x = x % 13;
+    QPixmap card_image = full_image->copy(mapx_to_x*73,mapx_to_y*97,73,97);
+    this->givePixmap(card_image,round);
 
-    }
 }
 
 void Player::standF()
@@ -203,6 +168,11 @@ void Player::on()
 {
     emit enable(true);
     emit disable(false);
+}
+
+void Player::emitDRAW()
+{
+    emit drawPLZ();
 }
 
 void Player::play()
