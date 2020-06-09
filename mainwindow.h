@@ -11,6 +11,7 @@
 #include <QLabel>
 
 #include "game.h"
+#include "gamesimpleai.h"
 
 class MainWindow : public QMainWindow
 {
@@ -22,6 +23,7 @@ public:
 
 public slots:
     void startPressed();
+    void startPressed2();
 
 private:
 
@@ -30,9 +32,13 @@ private:
 
     //start button
     QPushButton* start;
+    QPushButton* start2;
 
     //second screen with a game on it
     Game* game;
+
+    //third screen
+    GameSimpleAI* game_with_simple_ai;
 
     QTimer timer;
 };

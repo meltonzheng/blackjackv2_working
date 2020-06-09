@@ -18,13 +18,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     cardwidget.cpp \
     game.cpp \
+    gamesimpleai.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    player.cpp
 
 HEADERS += \
     cardwidget.h \
     game.h \
-    mainwindow.h
+    gamesimpleai.h \
+    mainwindow.h \
+    player.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -23,8 +23,6 @@ Game::Game(int nplayers)
     int w = 80;
     int h = 100;
 
-    QRectF* test = new QRectF(0,0,w,h);
-
     num_of_cards = 51;
 
     QHBoxLayout* player1_tray_layout = new QHBoxLayout();
@@ -140,8 +138,6 @@ rdraw2->setVisible(false);
     full_layout->addLayout(player2_tray_layout);
 
     draw = new QPushButton("First Draw");
-
-
 
     QHBoxLayout* buttons_layout = new QHBoxLayout();
 
@@ -494,12 +490,10 @@ void Game::doStand2()
     {
         sum1 += card_values.at(x);
     }
-
     for(auto x : indices2)
     {
         sum2 += card_values.at(x);
     }
-
     if( sum1 > sum2)
     {
         emit player1Won(true);
