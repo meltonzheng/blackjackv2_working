@@ -34,14 +34,16 @@ won->setVisible(false);
     full_layout->addWidget(lost);
     full_layout->addWidget(won);
 
+    QPushButton* play_again = new QPushButton("Play Again");
+    full_layout->addWidget(play_again);
+    play_again->setVisible(false);
+
     setLayout(full_layout);
 
 //connections:
     QObject::connect(firstDraw, &QPushButton::clicked, this, &GameSimpleAI::firstDrawCoords);
     QObject::connect(this, &GameSimpleAI::indices1ARE, ai, &Player::doFirstDraw);
     QObject::connect(this, &GameSimpleAI::indices2ARE, player1, &Player::doFirstDraw);
-    QObject::connect(player1, &Player::bust,lost,&QPushButton::setVisible);
-    QObject::connect(ai, &Player::bust,won,&QPushButton::setVisible);
 
 
     //present draw and stand buttons and remove first draw button
@@ -57,10 +59,31 @@ won->setVisible(false);
     QObject::connect(ai, &Player::sumIS, this, &GameSimpleAI::acceptValues1);
     QObject::connect(player1, &Player::sumIS, this, &GameSimpleAI::acceptValues2);
 
+    //end screen
+    QObject::connect(this, &GameSimpleAI::calculate, this, &GameSimpleAI::finish);
+    QObject::connect(this, &GameSimpleAI::AIWon, lost, &GameSimpleAI::setVisible);
+    QObject::connect(this, &GameSimpleAI::AIWon, won, &GameSimpleAI::setHidden);
+    QObject::connect(this, &GameSimpleAI::playerWon, won, &GameSimpleAI::setVisible);
+    QObject::connect(this, &GameSimpleAI::playerWon, lost, &GameSimpleAI::setHidden);
+    QObject::connect(this, &GameSimpleAI::AIWon, play_again, &GameSimpleAI::setVisible);
+    QObject::connect(this, &GameSimpleAI::playerWon, play_again, &GameSimpleAI::setVisible);
+    QObject::connect(player1, &Player::bust,lost,&QPushButton::setVisible);
+    QObject::connect(player1, &Player::bust,won,&QPushButton::setHidden);
+    QObject::connect(ai, &Player::bust,won,&QPushButton::setVisible);
+    QObject::connect(ai, &Player::bust,lost,&QPushButton::setHidden);
+    QObject::connect(player1, &Player::bust,play_again, &GameSimpleAI::setVisible);
+    QObject::connect(ai, &Player::bust,play_again, &GameSimpleAI::setVisible);
+
+
+    //play again?
+    QObject::connect(play_again,&QPushButton::clicked,play_again,&QPushButton::setVisible);
+    QObject::connect(play_again, &QPushButton::clicked, this, &GameSimpleAI::reset);
+    QObject::connect(play_again,&QPushButton::clicked,lost,&QPushButton::setVisible);
+    QObject::connect(play_again,&QPushButton::clicked,won,&QPushButton::setVisible);
 
     //Let AI make moves
     QObject::connect(firstDraw, &QPushButton::clicked, ai, &Player::play);
-
+    QObject::connect(ai, &Player::drawPLZ, ai, &Player::play);
 
 
 
@@ -135,8 +158,45 @@ void GameSimpleAI::drawCoords2()
 void GameSimpleAI::acceptValues1(int val)
 {
     val1 = val;
+    if(val2 != 0)
+    {
+        emit calculate();
+    }
 }
 void GameSimpleAI::acceptValues2(int val)
 {
     val2 = val;
+    if(val1 != 0)
+    {
+        emit calculate();
+    }
 }
+
+void GameSimpleAI::finish()
+{
+    if(val1 > val2)
+    {
+        lost->setText("AI Won!");
+        emit AIWon(true);
+    }
+    else
+    {
+        won->setText("Player Won!");
+        emit playerWon(true);
+    }
+}
+
+void GameSimpleAI::reset()
+{
+    //use full deck
+    num_of_cards = 51;
+
+    //clear out the pixmaps, indices
+    ai->clearStuff();
+    player1->clearStuff();
+
+    //restore the first button
+    firstDraw->setVisible(true);
+
+}
+

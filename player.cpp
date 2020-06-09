@@ -86,7 +86,7 @@ rdraw->setVisible(false);
 
 //AI connections
     // QObject::connect(this, &Player::hit,rdraw,&QPushButton::click);
-     //QObject::connect(this, &Player::standF,stand,&QPushButton::click);
+    // QObject::connect(this, &Player::standSig,stand,&QPushButton::click);
 }
 
 void Player::givePixmap(QPixmap& pimage, int round)
@@ -183,50 +183,65 @@ void Player::on()
 
 void Player::emitDRAW()
 {
-    int total = 0;
-    for(auto x : indices)
-    {
-        total+=x;
-    }
+
 
          emit drawPLZ();
 
 
 }
 
+void delay()
+{
+    QTime dieTime = QTime::currentTime().addSecs(2);
+    while(QTime::currentTime() < dieTime)
+        QCoreApplication::processEvents(QEventLoop::AllEvents,100);
+}
+
 void Player::play()
 {
+    rdraw->setEnabled(false);
+    stand->setEnabled(false);
+
+    delay();
+
     if(indices.size() > 1)
     {
-        int value1 = card_values.at(indices.at(0));
-        int value2 = card_values.at(indices.at(1));
-        if(value1 + value2 <= 16)
+        int total = 0;
+        for(auto x : indices)
         {
-            //emit hit();
+            total += card_values.at(x);
+        }
+        if(total <= 16)
+        {
+            emit drawPLZ();
         }
         else
         {
-           // emit stand();
+            int total = 0;
+            for(auto x : indices)
+            {
+                total+=card_values.at(x);
+            }
+            emit sumIS(total);
+            emit removal(false);
         }
-    }
-    else
-    {
-
     }
 }
 
-void Player::busted()
+void Player::clearStuff()
 {
-    int total = 0;
-    for(auto x : indices)
-    {
-        total+=card_values.at(x);
-    }
+     specialRoundBoolean = false;
 
-    std::cout << total;
+     indices.clear();
+    scene1->clear();
+    scene2->clear();
+     scene3->clear();
+      scene4->clear();
+       scene5->clear();
 
-    if( total > 21 )
-    {
-        emit bust(true);
-    }
+       round = 1;
+
+       rdraw->setVisible(false);
+        stand->setVisible(false);
+
 }

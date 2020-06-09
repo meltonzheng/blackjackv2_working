@@ -8,6 +8,8 @@
 #include <QGraphicsView>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QTime>
+#include <QCoreApplication>
 
 #include <iostream>
 
@@ -18,6 +20,7 @@ public:
     Player(std::string pname);
     void givePixmap(QPixmap& pimage, int round);
     void giveIndex(int pindex);
+    void clearStuff();
 
 public slots:
     void on();
@@ -36,6 +39,8 @@ signals:
     void sumIS(int asdf);
     void bust(bool b);
 //simple AI signals
+    void hit();
+    void standSig();
 
 private:
     int w;
@@ -62,8 +67,6 @@ private:
     QGraphicsView* view4;
     QGraphicsView* view5;
     QHBoxLayout* player_tray_layout;
-
-    void busted();
 };
 
 #endif // PLAYER_H

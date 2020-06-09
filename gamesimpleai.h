@@ -18,6 +18,7 @@
 #include <QRandomGenerator>
 #include <algorithm>
 
+
 #include "player.h"
 
 class GameSimpleAI : public QWidget
@@ -34,7 +35,8 @@ public slots:
     void drawCoords2();
     void acceptValues1(int val);
     void acceptValues2(int val);
-
+    void finish();
+    void reset();
 
 signals:
     void gameStarted();
@@ -42,6 +44,11 @@ signals:
     void indices2ARE(int c, int d);
     void indexS1(int x);
     void indexS2(int x);
+    void calculate();
+    void playerWon(bool b);
+    void AIWon(bool b);
+
+
 
 private:
     int num_of_players;
@@ -53,8 +60,8 @@ private:
     int index4;
     int index5;
     int index6;
-    int val1;
-    int val2;
+    int val1=0;
+    int val2=0;
 
     Player* player1;
     Player* ai;
