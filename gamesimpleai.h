@@ -32,6 +32,9 @@ public slots:
     void firstDrawCoords();
     void drawCoords1();
     void drawCoords2();
+    void acceptValues1(int val);
+    void acceptValues2(int val);
+
 
 signals:
     void gameStarted();
@@ -50,10 +53,8 @@ private:
     int index4;
     int index5;
     int index6;
-    int index7;
-    int index8;
-    int index9;
-    int index10;
+    int val1;
+    int val2;
 
     Player* player1;
     Player* ai;
@@ -65,6 +66,8 @@ private:
     QPixmap* full_image;
     QPixmap card_image;
     QPushButton* firstDraw;
+    QLabel* won;
+    QLabel* lost;
 
     void makeDeck();
 

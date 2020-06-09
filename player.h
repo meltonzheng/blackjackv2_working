@@ -9,6 +9,8 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 
+#include <iostream>
+
 class Player : public QWidget
 {
     Q_OBJECT
@@ -30,6 +32,9 @@ signals:
     void enable(bool b);
     void disable(bool b);
     void drawPLZ();
+    void removal(bool b);
+    void sumIS(int asdf);
+    void bust(bool b);
 //simple AI signals
 
 private:
@@ -58,6 +63,7 @@ private:
     QGraphicsView* view5;
     QHBoxLayout* player_tray_layout;
 
+    void busted();
 };
 
 #endif // PLAYER_H

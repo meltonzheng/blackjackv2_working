@@ -80,6 +80,8 @@ rdraw->setVisible(false);
      QObject::connect(this, &Player::enable,stand,&QPushButton::setVisible);
      QObject::connect(rdraw, &QPushButton::clicked,this,&Player::emitDRAW);
      QObject::connect(stand, &QPushButton::clicked,this,&Player::standF);
+     QObject::connect(this, &Player::removal,rdraw,&QPushButton::setVisible);
+     QObject::connect(this, &Player::removal,stand,&QPushButton::setVisible);
 
 
 //AI connections
@@ -102,45 +104,38 @@ void Player::givePixmap(QPixmap& pimage, int round)
     }
     else if (round == 2)
     {
-        //this should run first, so that the second call is true
         scene3->addPixmap(pimage);
         specialRoundBoolean = true;
     }
     else if (round == 3)
     {
-        //this should run first, so that the second call is true
         scene4->addPixmap(pimage);
         specialRoundBoolean = true;
     }
     else if (round == 4)
     {
-        //this should run first, so that the second call is true
         scene5->addPixmap(pimage);
         specialRoundBoolean = true;
     }
 }
 
-void Player::giveIndex(int pindex)
-{
-    indices.push_back(pindex);
-}
 
 void Player::doFirstDraw(int x, int y)
 {
     round = 1;
 
-    this->giveIndex(x);
-    this->giveIndex(y);
+    indices.push_back(x);
+    indices.push_back(y);
 
     int mapx_to_y = x % 4;
-    int mapx_to_x = x % 13;
+    int mapx_to_x = (x - mapx_to_y)/4;
 
     QPixmap card_image = full_image->copy(mapx_to_x*73,mapx_to_y*97,73,97);
 
     this->givePixmap(card_image,round);
 
     int mapy_to_y = y % 4;
-    int mapy_to_x = y % 13;
+    int mapy_to_x = (y - mapy_to_y)/4;
 
     card_image = full_image->copy(mapy_to_x*73,mapy_to_y*97,73,97);
 
@@ -151,17 +146,33 @@ void Player::doFirstDraw(int x, int y)
 void Player::drawF(int x)
 {
     round++;
-    this->giveIndex(x);
+    indices.push_back(x);
     int mapx_to_y = x % 4;
-    int mapx_to_x = x % 13;
+    int mapx_to_x = (x - mapx_to_y)/4;
     QPixmap card_image = full_image->copy(mapx_to_x*73,mapx_to_y*97,73,97);
     this->givePixmap(card_image,round);
 
+    int total = 0;
+    for(auto x : indices)
+    {
+        total+=card_values.at(x);
+    }
+    if( total > 21)
+    {
+
+        emit bust(true);
+    }
 }
 
 void Player::standF()
 {
-
+    int total = 0;
+    for(auto x : indices)
+    {
+        total+=card_values.at(x);
+    }
+    emit sumIS(total);
+    emit removal(false);
 }
 
 void Player::on()
@@ -172,7 +183,15 @@ void Player::on()
 
 void Player::emitDRAW()
 {
-    emit drawPLZ();
+    int total = 0;
+    for(auto x : indices)
+    {
+        total+=x;
+    }
+
+         emit drawPLZ();
+
+
 }
 
 void Player::play()
@@ -187,11 +206,27 @@ void Player::play()
         }
         else
         {
-           // emit standF();
+           // emit stand();
         }
     }
     else
     {
 
+    }
+}
+
+void Player::busted()
+{
+    int total = 0;
+    for(auto x : indices)
+    {
+        total+=card_values.at(x);
+    }
+
+    std::cout << total;
+
+    if( total > 21 )
+    {
+        emit bust(true);
     }
 }

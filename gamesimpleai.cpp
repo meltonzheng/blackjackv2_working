@@ -25,12 +25,24 @@ GameSimpleAI::GameSimpleAI()
 
     full_layout->addWidget(firstDraw);
 
+    lost = new QLabel("Player 1 Busted! AI wins!");
+lost->setVisible(false);
+
+    won = new QLabel("AI Busted! Player 1 Wins!");
+won->setVisible(false);
+
+    full_layout->addWidget(lost);
+    full_layout->addWidget(won);
+
     setLayout(full_layout);
 
 //connections:
     QObject::connect(firstDraw, &QPushButton::clicked, this, &GameSimpleAI::firstDrawCoords);
     QObject::connect(this, &GameSimpleAI::indices1ARE, ai, &Player::doFirstDraw);
     QObject::connect(this, &GameSimpleAI::indices2ARE, player1, &Player::doFirstDraw);
+    QObject::connect(player1, &Player::bust,lost,&QPushButton::setVisible);
+    QObject::connect(ai, &Player::bust,won,&QPushButton::setVisible);
+
 
     //present draw and stand buttons and remove first draw button
     QObject::connect(firstDraw, &QPushButton::clicked, player1, &Player::on);
@@ -40,11 +52,16 @@ GameSimpleAI::GameSimpleAI()
     //activate draw and stand buttons
     QObject::connect(player1, &Player::drawPLZ, this, &GameSimpleAI::drawCoords1);
     QObject::connect(this, &GameSimpleAI::indexS1, player1, &Player::drawF);
+    QObject::connect(ai, &Player::drawPLZ, this, &GameSimpleAI::drawCoords2);
+    QObject::connect(this, &GameSimpleAI::indexS2, ai, &Player::drawF);
+    QObject::connect(ai, &Player::sumIS, this, &GameSimpleAI::acceptValues1);
+    QObject::connect(player1, &Player::sumIS, this, &GameSimpleAI::acceptValues2);
+
 
     //Let AI make moves
     QObject::connect(firstDraw, &QPushButton::clicked, ai, &Player::play);
-    QObject::connect(ai, &Player::drawPLZ, this, &GameSimpleAI::drawCoords2);
-    QObject::connect(this, &GameSimpleAI::indexS2, ai, &Player::drawF);
+
+
 
 
 }
@@ -96,26 +113,30 @@ void GameSimpleAI::firstDrawCoords()
 void GameSimpleAI::drawCoords1()
 {
     index5 = QRandomGenerator::global()->bounded(0,num_of_cards) + 1;
-
     while( std::find(indices.begin(), indices.end(), index5) != indices.end() )
     {
         index5 = QRandomGenerator::global()->bounded(0,num_of_cards) + 1;
     }
     indices.push_back(index5);
-
     emit indexS1(index5);
 }
 
 void GameSimpleAI::drawCoords2()
 {
     index6 = QRandomGenerator::global()->bounded(0,num_of_cards) + 1;
-
     while( std::find(indices.begin(), indices.end(), index6) != indices.end() )
     {
         index6 = QRandomGenerator::global()->bounded(0,num_of_cards) + 1;
     }
     indices.push_back(index6);
-
     emit indexS2(index6);
+}
 
+void GameSimpleAI::acceptValues1(int val)
+{
+    val1 = val;
+}
+void GameSimpleAI::acceptValues2(int val)
+{
+    val2 = val;
 }
