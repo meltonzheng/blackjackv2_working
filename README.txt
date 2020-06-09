@@ -11,6 +11,6 @@ Optimizations needed:
 			S̶i̶m̶p̶l̶e̶ ̶A̶I̶
 			here we can do machine learning
 			perhaps do more here
-	Create a game w money/points involved
+̶	C̶r̶e̶a̶t̶e̶ ̶a̶ ̶g̶a̶m̶e̶ ̶w̶ ̶m̶o̶n̶e̶y̶/̶p̶o̶i̶n̶t̶s̶ ̶i̶n̶v̶o̶l̶v̶e̶d̶	
 	Cover the cards w something so that one player can't see the other player's cards
 	
