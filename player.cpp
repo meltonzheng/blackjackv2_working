@@ -8,6 +8,29 @@ Player::Player(std::string pname) : name(pname)
 
     full_image = new QPixmap(":/cards.jpg");
 
+    moneyLabel = new QLabel();
+    money = 1000;
+    waitforbets=false;
+    bet = new QPushButton();
+    bet->setText("Bet: ");
+    bet->setEnabled(false);
+
+    betMoney = new QSpinBox();
+    betMoney->setRange(1,money);
+    betMoney->setEnabled(false);
+
+    QHBoxLayout* beyLayout = new QHBoxLayout;
+    QVBoxLayout* bey2Layout = new QVBoxLayout;
+    bey2Layout->addWidget(moneyLabel);
+    bey2Layout->addLayout(beyLayout);
+    beyLayout->addWidget(bet);
+    betMoney->resize(5,5);
+    beyLayout->addWidget(betMoney);
+
+    std::string moneyString = "Money: $" + std::to_string(money);
+
+    moneyLabel->setText(QString::fromStdString(moneyString));
+
     //Create the values for each card (same index)
 
     for(int i = 0; i < 10; i ++)
@@ -62,6 +85,7 @@ Player::Player(std::string pname) : name(pname)
         view5->setFixedSize(QSize(w,h));
     player_tray_layout = new QHBoxLayout;
     player_tray_layout->addWidget(playerLabel);
+    player_tray_layout->addLayout(bey2Layout);
     player_tray_layout->addWidget(view1);
     player_tray_layout->addWidget(view2);
     player_tray_layout->addWidget(view3);
@@ -78,6 +102,10 @@ rdraw->setVisible(false);
 //Create connections
      QObject::connect(this, &Player::enable,rdraw,&QPushButton::setVisible);
      QObject::connect(this, &Player::enable,stand,&QPushButton::setVisible);
+     QObject::connect(this, &Player::enableBetting,bet,&QPushButton::setEnabled);
+     QObject::connect(this, &Player::enableBetting,betMoney,&QPushButton::setEnabled);
+     QObject::connect(bet, &QPushButton::clicked,this,&Player::continueGame);
+
      QObject::connect(rdraw, &QPushButton::clicked,this,&Player::emitDRAW);
      QObject::connect(stand, &QPushButton::clicked,this,&Player::standF);
      QObject::connect(this, &Player::removal,rdraw,&QPushButton::setVisible);
@@ -172,12 +200,13 @@ void Player::standF()
         total+=card_values.at(x);
     }
     emit sumIS(total);
+    emit done(true);
     emit removal(false);
 }
 
 void Player::on()
 {
-    emit enable(true);
+    emit enableBetting(true);
     emit disable(false);
 }
 
@@ -185,7 +214,7 @@ void Player::emitDRAW()
 {
 
 
-         emit drawPLZ();
+    emit drawPLZ();
 
 
 }
@@ -196,6 +225,18 @@ void delay()
     while(QTime::currentTime() < dieTime)
         QCoreApplication::processEvents(QEventLoop::AllEvents,100);
 }
+void Player::setup()
+{
+    bet->setEnabled(false);
+    theBet = 5;
+    money -= theBet;
+    std::string moneyString = "Money: $" + std::to_string(money);
+    moneyLabel->setText(QString::fromStdString(moneyString));
+    betMoney->setRange(1,money);
+    betMoney->setDisabled(true);
+
+}
+
 
 void Player::play()
 {
@@ -223,9 +264,30 @@ void Player::play()
                 total+=card_values.at(x);
             }
             emit sumIS(total);
+            emit done(true);
             emit removal(false);
         }
     }
+}
+
+void Player::continueGame()
+{
+    bet->setEnabled(false);
+    theBet = betMoney->value();
+    money -= theBet;
+    std::string moneyString = "Money: $" + std::to_string(money);
+    betMoney->setRange(1,money);
+    moneyLabel->setText(QString::fromStdString(moneyString));
+
+    emit enable(true);
+}
+
+void Player::increase()
+{
+    money += theBet*2;
+    std::string moneyString = "Money: $" + std::to_string(money);
+    betMoney->setRange(1,money);
+    moneyLabel->setText(QString::fromStdString(moneyString));
 }
 
 void Player::clearStuff()
@@ -245,3 +307,5 @@ void Player::clearStuff()
         stand->setVisible(false);
 
 }
+
+

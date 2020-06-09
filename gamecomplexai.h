@@ -1,5 +1,5 @@
-#ifndef GAMESIMPLEAI_H
-#define GAMESIMPLEAI_H
+#ifndef GAMECOMPLEXAI_H
+#define GAMECOMPLEXAI_H
 
 #include <QObject>
 #include <QWidget>
@@ -21,11 +21,11 @@
 
 #include "player.h"
 
-class GameSimpleAI : public QWidget
+class GameComplexAI : public QWidget
 {
     Q_OBJECT
 public:
-    explicit GameSimpleAI();
+    explicit GameComplexAI();
 
 public slots:
     void setNumberOfPlayers(int players);
@@ -37,8 +37,6 @@ public slots:
     void acceptValues2(int val);
     void finish();
     void reset();
-    void standBy1(bool b);
-    void standBy2(bool b);
 
 signals:
     void gameStarted();
@@ -64,8 +62,6 @@ private:
     int index6;
     int val1=0;
     int val2=0;
-    bool b1 = false;
-    bool b2 = false;
 
     Player* player1;
     Player* ai;
@@ -87,4 +83,4 @@ private:
 };
 
 
-#endif // GAMESIMPLEAI_H
+#endif // GAMECOMPLEXAI_H

@@ -1,8 +1,8 @@
-#include "gamesimpleai.h"
+#include "GameComplexAI.h"
 
 #include <iostream>
 
-GameSimpleAI::GameSimpleAI()
+GameComplexAI::GameComplexAI()
     : QWidget(nullptr)
 {
     int w = 80;
@@ -41,82 +41,67 @@ won->setVisible(false);
     setLayout(full_layout);
 
 //connections:
-    QObject::connect(firstDraw, &QPushButton::clicked, this, &GameSimpleAI::firstDrawCoords);
-    QObject::connect(this, &GameSimpleAI::indices1ARE, ai, &Player::doFirstDraw);
-    QObject::connect(this, &GameSimpleAI::indices2ARE, player1, &Player::doFirstDraw);
+    QObject::connect(firstDraw, &QPushButton::clicked, this, &GameComplexAI::firstDrawCoords);
+    QObject::connect(this, &GameComplexAI::indices1ARE, ai, &Player::doFirstDraw);
+    QObject::connect(this, &GameComplexAI::indices2ARE, player1, &Player::doFirstDraw);
 
 
     //present draw and stand buttons and remove first draw button
     QObject::connect(firstDraw, &QPushButton::clicked, player1, &Player::on);
     QObject::connect(firstDraw, &QPushButton::clicked, ai, &Player::on);
-    QObject::connect(player1, &Player::disable, firstDraw, &GameSimpleAI::setVisible);
+    QObject::connect(player1, &Player::disable, firstDraw, &GameComplexAI::setVisible);
 
     //activate draw and stand buttons
-    QObject::connect(player1, &Player::drawPLZ, this, &GameSimpleAI::drawCoords1);
-    QObject::connect(this, &GameSimpleAI::indexS1, player1, &Player::drawF);
-    QObject::connect(ai, &Player::drawPLZ, this, &GameSimpleAI::drawCoords2);
-    QObject::connect(this, &GameSimpleAI::indexS2, ai, &Player::drawF);
-    QObject::connect(ai, &Player::sumIS, this, &GameSimpleAI::acceptValues1);
-    QObject::connect(player1, &Player::sumIS, this, &GameSimpleAI::acceptValues2);
-    QObject::connect(ai, &Player::done, this, &GameSimpleAI::standBy1);
-    QObject::connect(player1, &Player::done, this, &GameSimpleAI::standBy2);
+    QObject::connect(player1, &Player::drawPLZ, this, &GameComplexAI::drawCoords1);
+    QObject::connect(this, &GameComplexAI::indexS1, player1, &Player::drawF);
+    QObject::connect(ai, &Player::drawPLZ, this, &GameComplexAI::drawCoords2);
+    QObject::connect(this, &GameComplexAI::indexS2, ai, &Player::drawF);
+    QObject::connect(ai, &Player::sumIS, this, &GameComplexAI::acceptValues1);
+    QObject::connect(player1, &Player::sumIS, this, &GameComplexAI::acceptValues2);
 
     //end screen
-    QObject::connect(this, &GameSimpleAI::calculate, this, &GameSimpleAI::finish);
-    QObject::connect(this, &GameSimpleAI::AIWon, lost, &GameSimpleAI::setVisible);
-        //if AI won, increase his money
-    QObject::connect(this, &GameSimpleAI::AIWon, ai, &Player::increase);
-
-    QObject::connect(this, &GameSimpleAI::AIWon, won, &GameSimpleAI::setHidden);
-    QObject::connect(this, &GameSimpleAI::playerWon, won, &GameSimpleAI::setVisible);
-       //if player won, increase his money
-    QObject::connect(this, &GameSimpleAI::playerWon, player1, &Player::increase);
-
-    QObject::connect(this, &GameSimpleAI::playerWon, lost, &GameSimpleAI::setHidden);
-    QObject::connect(this, &GameSimpleAI::AIWon, play_again, &GameSimpleAI::setVisible);
-    QObject::connect(this, &GameSimpleAI::playerWon, play_again, &GameSimpleAI::setVisible);
+    QObject::connect(this, &GameComplexAI::calculate, this, &GameComplexAI::finish);
+    QObject::connect(this, &GameComplexAI::AIWon, lost, &GameComplexAI::setVisible);
+    QObject::connect(this, &GameComplexAI::AIWon, won, &GameComplexAI::setHidden);
+    QObject::connect(this, &GameComplexAI::playerWon, won, &GameComplexAI::setVisible);
+    QObject::connect(this, &GameComplexAI::playerWon, lost, &GameComplexAI::setHidden);
+    QObject::connect(this, &GameComplexAI::AIWon, play_again, &GameComplexAI::setVisible);
+    QObject::connect(this, &GameComplexAI::playerWon, play_again, &GameComplexAI::setVisible);
     QObject::connect(player1, &Player::bust,lost,&QPushButton::setVisible);
-    //if player busted, increase ai money
-    QObject::connect(player1, &Player::bust, ai, &Player::increase);
-
     QObject::connect(player1, &Player::bust,won,&QPushButton::setHidden);
     QObject::connect(ai, &Player::bust,won,&QPushButton::setVisible);
-    //if ai busted, increase player money
-    QObject::connect(ai, &Player::bust, player1, &Player::increase);
-
     QObject::connect(ai, &Player::bust,lost,&QPushButton::setHidden);
-    QObject::connect(player1, &Player::bust,play_again, &GameSimpleAI::setVisible);
-    QObject::connect(ai, &Player::bust,play_again, &GameSimpleAI::setVisible);
+    QObject::connect(player1, &Player::bust,play_again, &GameComplexAI::setVisible);
+    QObject::connect(ai, &Player::bust,play_again, &GameComplexAI::setVisible);
 
 
     //play again?
     QObject::connect(play_again,&QPushButton::clicked,play_again,&QPushButton::setVisible);
-    QObject::connect(play_again, &QPushButton::clicked, this, &GameSimpleAI::reset);
+    QObject::connect(play_again, &QPushButton::clicked, this, &GameComplexAI::reset);
     QObject::connect(play_again,&QPushButton::clicked,lost,&QPushButton::setVisible);
     QObject::connect(play_again,&QPushButton::clicked,won,&QPushButton::setVisible);
 
     //Let AI make moves
-    QObject::connect(firstDraw, &QPushButton::clicked, ai, &Player::setup);
-    QObject::connect(player1, &Player::enable, ai, &Player::play);
+    QObject::connect(firstDraw, &QPushButton::clicked, ai, &Player::play);
     QObject::connect(ai, &Player::drawPLZ, ai, &Player::play);
 
 
 
 }
-void GameSimpleAI::makeDeck()
+void GameComplexAI::makeDeck()
 {
 
 }
-void GameSimpleAI::setNumberOfPlayers(int nplayers)
+void GameComplexAI::setNumberOfPlayers(int nplayers)
 {
     this->num_of_players = nplayers;
 }
-void GameSimpleAI::startGame()
+void GameComplexAI::startGame()
 {
 
 }
 
-void GameSimpleAI::firstDrawCoords()
+void GameComplexAI::firstDrawCoords()
 {
     if( num_of_cards == 51)
     {
@@ -148,7 +133,7 @@ void GameSimpleAI::firstDrawCoords()
     }
 }
 
-void GameSimpleAI::drawCoords1()
+void GameComplexAI::drawCoords1()
 {
     index5 = QRandomGenerator::global()->bounded(0,num_of_cards) + 1;
     while( std::find(indices.begin(), indices.end(), index5) != indices.end() )
@@ -159,7 +144,7 @@ void GameSimpleAI::drawCoords1()
     emit indexS1(index5);
 }
 
-void GameSimpleAI::drawCoords2()
+void GameComplexAI::drawCoords2()
 {
     index6 = QRandomGenerator::global()->bounded(0,num_of_cards) + 1;
     while( std::find(indices.begin(), indices.end(), index6) != indices.end() )
@@ -170,35 +155,38 @@ void GameSimpleAI::drawCoords2()
     emit indexS2(index6);
 }
 
-void GameSimpleAI::acceptValues1(int val)
+void GameComplexAI::acceptValues1(int val)
 {
     val1 = val;
+    if(val2 != 0)
+    {
+        emit calculate();
+    }
 }
-void GameSimpleAI::acceptValues2(int val)
+void GameComplexAI::acceptValues2(int val)
 {
     val2 = val;
+    if(val1 != 0)
+    {
+        emit calculate();
+    }
 }
 
-void GameSimpleAI::finish()
+void GameComplexAI::finish()
 {
     if(val1 > val2)
     {
         lost->setText("AI Won!");
         emit AIWon(true);
     }
-    else if (val1 < val2)
+    else
     {
         won->setText("Player Won!");
         emit playerWon(true);
     }
-    else
-    {
-        won->setText("Players Tied!");
-        emit playerWon(true);
-    }
 }
 
-void GameSimpleAI::reset()
+void GameComplexAI::reset()
 {
     //use full deck
     num_of_cards = 51;
@@ -209,23 +197,6 @@ void GameSimpleAI::reset()
 
     //restore the first button
     firstDraw->setVisible(true);
-    b1 = false;
-    b2 = false;
-}
-void GameSimpleAI::standBy1(bool b)
-{
-    b1 = b;
-    if(b1 && b2)
-    {
-        emit calculate();
-    }
-}
-void GameSimpleAI::standBy2(bool b)
-{
-    b2 = b;
-    if(b1 && b2)
-    {
-        emit calculate();
-    }
+
 }
 
