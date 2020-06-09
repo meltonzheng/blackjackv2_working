@@ -33,7 +33,12 @@ Player::Player(std::string pname) : name(pname)
 
     //Create the values for each card (same index)
 
-    for(int i = 0; i < 10; i ++)
+    for(int l = 0; l < 4; l++)
+    {
+        card_values.push_back(11);
+    }
+
+    for(int i = 1; i < 10; i ++)
     {
         for(int j = 0; j < 4; j++)
         {
@@ -185,9 +190,16 @@ void Player::drawF(int x)
     {
         total+=card_values.at(x);
     }
+    //check for aces
+    for(auto x : indices)
+    {
+        if(x < 4 && total > 21)
+        {
+            total-=10;
+        }
+    }
     if( total > 21)
     {
-
         emit bust(true);
     }
 }
@@ -198,6 +210,13 @@ void Player::standF()
     for(auto x : indices)
     {
         total+=card_values.at(x);
+    }
+    for(auto x : indices)
+    {
+        if(x < 4 && total > 21)
+        {
+            total-=10;
+        }
     }
     emit sumIS(total);
     emit done(true);
@@ -252,6 +271,13 @@ void Player::play()
         {
             total += card_values.at(x);
         }
+        for(auto x : indices)
+        {
+            if(x < 4 && total > 21)
+            {
+                total-=10;
+            }
+        }
         if(total <= 16)
         {
             emit drawPLZ();
@@ -262,6 +288,13 @@ void Player::play()
             for(auto x : indices)
             {
                 total+=card_values.at(x);
+            }
+            for(auto x : indices)
+            {
+                if(x < 4 && total > 21)
+                {
+                    total-=10;
+                }
             }
             emit sumIS(total);
             emit done(true);
