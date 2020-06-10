@@ -24,7 +24,6 @@ GameSimpleAI::GameSimpleAI()
     firstDraw = new QPushButton("First Draw");
 
     full_layout->addWidget(firstDraw);
-
     lost = new QLabel("Player 1 Busted! AI wins!");
 lost->setVisible(false);
 
@@ -88,6 +87,11 @@ won->setVisible(false);
     QObject::connect(player1, &Player::bust,play_again, &GameSimpleAI::setVisible);
     QObject::connect(ai, &Player::bust,play_again, &GameSimpleAI::setVisible);
 
+    //if tied
+    QObject::connect(this, &GameSimpleAI::tied, won, &GameSimpleAI::setVisible);
+    QObject::connect(this, &GameSimpleAI::tied, lost, &GameSimpleAI::setHidden);
+    QObject::connect(this, &GameSimpleAI::tied, ai, &Player::equalize);
+    QObject::connect(this, &GameSimpleAI::tied, player1, &Player::equalize);
 
     //play again?
     QObject::connect(play_again,&QPushButton::clicked,play_again,&QPushButton::setVisible);
@@ -194,7 +198,7 @@ void GameSimpleAI::finish()
     else
     {
         won->setText("Players Tied!");
-        emit playerWon(true);
+        emit tied(true);
     }
 }
 
@@ -211,6 +215,10 @@ void GameSimpleAI::reset()
     firstDraw->setVisible(true);
     b1 = false;
     b2 = false;
+
+    lost->setText("Player 1 Busted! AI wins!");
+    won->setText("AI Busted! Player 1 Wins!");
+
 }
 void GameSimpleAI::standBy1(bool b)
 {

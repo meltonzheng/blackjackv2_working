@@ -49,6 +49,7 @@ signals:
     void calculate();
     void playerWon(bool b);
     void AIWon(bool b);
+    void tied(bool b);
 
 
 

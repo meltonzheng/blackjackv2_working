@@ -31,6 +31,7 @@ public slots:
     void emitDRAW();
     void continueGame();
     void increase();
+    void equalize();
 //simple AI slot
     void play();
     void setup();

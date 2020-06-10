@@ -323,6 +323,14 @@ void Player::increase()
     moneyLabel->setText(QString::fromStdString(moneyString));
 }
 
+void Player::equalize()
+{
+    money += theBet;
+    std::string moneyString = "Money: $" + std::to_string(money);
+    betMoney->setRange(1,money);
+    moneyLabel->setText(QString::fromStdString(moneyString));
+}
+
 void Player::clearStuff()
 {
      specialRoundBoolean = false;
