@@ -1,5 +1,5 @@
-#ifndef GAMECOMPLEXAI_H
-#define GAMECOMPLEXAI_H
+#ifndef GameComplexAI_H
+#define GameComplexAI_H
 
 #include <QObject>
 #include <QWidget>
@@ -16,10 +16,13 @@
 #include <QGraphicsView>
 #include <QPainter>
 #include <QRandomGenerator>
+#include <QTextStream>
+
 #include <algorithm>
 
 
 #include "player.h"
+#include "complexai.h"
 
 class GameComplexAI : public QWidget
 {
@@ -37,6 +40,9 @@ public slots:
     void acceptValues2(int val);
     void finish();
     void reset();
+    void standBy1(bool b);
+    void standBy2(bool b);
+
 
 signals:
     void gameStarted();
@@ -47,6 +53,7 @@ signals:
     void calculate();
     void playerWon(bool b);
     void AIWon(bool b);
+    void tied(bool b);
 
 
 
@@ -62,9 +69,11 @@ private:
     int index6;
     int val1=0;
     int val2=0;
+    bool b1 = false;
+    bool b2 = false;
 
     Player* player1;
-    Player* ai;
+    ComplexAI* ai;
 
     std::vector<int> indices;
     std::vector<QPixmap> card_images;
@@ -83,4 +92,4 @@ private:
 };
 
 
-#endif // GAMECOMPLEXAI_H
+#endif // GameComplexAI_H

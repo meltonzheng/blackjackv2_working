@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     cardwidget.cpp \
+    complexai.cpp \
     game.cpp \
     gamecomplexai.cpp \
     gamesimpleai.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
 
 HEADERS += \
     cardwidget.h \
+    complexai.h \
     game.h \
     gamecomplexai.h \
     gamesimpleai.h \
