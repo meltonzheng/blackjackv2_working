@@ -15,7 +15,7 @@ ComplexAI::ComplexAI()
 
     full_image = new QPixmap(":/cards.jpg");
 
-    reset();
+   // reset();
 
     QString filename="C:/Users/Melton/Documents/blackjackv2/data.txt";
 
@@ -257,6 +257,9 @@ void ComplexAI::doFirstDraw(int x, int y)
     indices.push_back(x);
     indices.push_back(y);
 
+    nodes1.at(x) = 1;
+    nodes1.at(y) = 1;
+
     int mapx_to_y = x % 4;
     int mapx_to_x = (x - mapx_to_y)/4;
 
@@ -338,13 +341,11 @@ void ComplexAI::setup()
     //here I want the AI to create a bet which maximizes profit
     //initialize first layer
 
-    nodes1.at(indices.at(0)) = 1;
-    nodes1.at(indices.at(1)) = 1;
     //calculate next layer(2) size of 30
 
     for(unsigned int i = 0; i < nodes2.size(); i++)
     {
-        int total = 0;
+        double total = 0;
         for(unsigned int j = 0; j < nodes1.size(); j++)
         {
             total += nodes1.at(j) * weights1.at(j);
@@ -355,7 +356,7 @@ void ComplexAI::setup()
 
     for(unsigned int i = 0; i < nodes3.size(); i++)
     {
-        int total = 0;
+        double total = 0;
         for(unsigned int j = 0; j < nodes2.size(); j++)
         {
             total += nodes2.at(j) * weights2.at(j);
@@ -369,7 +370,8 @@ void ComplexAI::setup()
     {
         totalVal += sigmoid(nodes3.at(i)*weights3.at(i) );
     }
-    multiplier = sigmoid(totalVal);
+
+    multiplier = (totalVal);
 
     theBet = multiplier*money;
     money -= theBet;
@@ -457,7 +459,7 @@ void ComplexAI::equalize()
     betMoney->setRange(1,money);
     moneyLabel->setText(QString::fromStdString(moneyString));
 
-    learn(0.50 - multiplier);
+    //learn(0.50 - multiplier);
 }
 
 void ComplexAI::learnLost()
@@ -558,10 +560,10 @@ void ComplexAI::reset()
 
         QTextStream out(&file);
 
-        int layer1 = 54;
-        int layer2 = 30;
-        int layer3 = 15;
-        int x = 1;
+        unsigned int layer1 = 54;
+        unsigned int layer2 = 30;
+        unsigned int layer3 = 15;
+        double x = 0.01;
 
         out << "Level 1: " << "\n";
             out << "Weights: ";
@@ -620,7 +622,7 @@ void ComplexAI::learn(double cost)
         double a = nodes3.at(i);
         double w = weights3.at(i);
         double b = biases3.at(i);
-        NEWweights3.at(i) = w * (a * sigmoidD(w * a + b) * 2 * cost);
+        NEWweights3.at(i) = w - (a * sigmoidD(w * a + b) * 2 * cost);
     }
     weights3 = NEWweights3;
     //correct baises for layer 3
@@ -630,7 +632,7 @@ void ComplexAI::learn(double cost)
         double a = nodes3.at(i);
         double w = weights3.at(i);
         double b = biases3.at(i);
-        NEWbiases3.at(i) = b * (sigmoidD(w * a + b) * 2 * cost);
+        NEWbiases3.at(i) = b - (sigmoidD(w * a + b) * 2 * cost);
     }
     biases3 = NEWbiases3;
     //correct nodes for layer 3
@@ -644,7 +646,7 @@ void ComplexAI::learn(double cost)
         double w = weights3.at(i);
         double b = biases3.at(i);
         costPerNode.at(i) = (w * sigmoidD(w * a + b) * 2 * cost);
-        NEWnodes3.at(i) = a * (w * sigmoidD(w * a + b) * 2 * cost);
+        NEWnodes3.at(i) = a - (w * sigmoidD(w * a + b) * 2 * cost);
     }
     nodes3 = NEWnodes3;
 
@@ -657,7 +659,7 @@ void ComplexAI::learn(double cost)
             double a = nodes2.at(j);
             double w = weights2.at(j);
             double b = biases2.at(j);
-            NEWweights2.at(j) += w * (a * sigmoidD(w * a + b) * costPerNode.at(i) );
+            NEWweights2.at(j) += w - (a * sigmoidD(w * a + b) * costPerNode.at(i) );
         }
     }
     for(unsigned int k = 0; k < weights2.size(); k++)
@@ -675,7 +677,7 @@ void ComplexAI::learn(double cost)
             double a = nodes2.at(j);
             double w = weights2.at(j);
             double b = biases2.at(j);
-            NEWbiases2.at(j) += b * (a * sigmoidD(w * a + b) * costPerNode.at(i) );
+            NEWbiases2.at(j) += b - (sigmoidD(w * a + b) * costPerNode.at(i) );
         }
     }
     for(unsigned int k = 0; k < biases2.size(); k++)
@@ -697,7 +699,7 @@ void ComplexAI::learn(double cost)
             double w = weights2.at(j);
             double b = biases2.at(j);
             costPerNode2.at(j) += (w * sigmoidD(w * a + b) * costPerNode.at(i));
-            NEWnodes2.at(j) += a * (w * sigmoidD(w * a + b) * costPerNode.at(i));
+            NEWnodes2.at(j) += a - (w * sigmoidD(w * a + b) * costPerNode.at(i));
         }
 
     }
@@ -717,7 +719,7 @@ void ComplexAI::learn(double cost)
             double a = nodes1.at(j);
             double w = weights1.at(j);
             double b = biases1.at(j);
-            NEWweights1.at(j) += w * (a * sigmoidD(w * a + b) * costPerNode2.at(i) );
+            NEWweights1.at(j) += w - (a * sigmoidD(w * a + b) * costPerNode2.at(i) );
         }
     }
     for(unsigned int k = 0; k < weights1.size(); k++)
@@ -725,25 +727,6 @@ void ComplexAI::learn(double cost)
         NEWweights1.at(k) /= weights2.size();
     }
     weights1 = NEWweights1;
-
-    //correct biases in layer 1
-    std::vector<double> NEWbiases1(biases1.size());
-    for(unsigned int i = 0; i < biases2.size(); i++)
-    {
-        for(unsigned int j = 0; j < biases1.size(); j++)
-        {
-            double a = nodes1.at(j);
-            double w = weights1.at(j);
-            double b = biases1.at(j);
-            NEWbiases1.at(j) += b * (a * sigmoidD(w * a + b) * costPerNode2.at(i) );
-        }
-    }
-    for(unsigned int k = 0; k < biases1.size(); k++)
-    {
-        NEWbiases1.at(k) /= biases2.size();
-    }
-    biases1 = NEWbiases1;
-
 
     updateData();
 }
